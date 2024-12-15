@@ -3,10 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BookModule } from './entities/book/book.module';
+import { HighlightModule } from './entities/highlight/highlight.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Enable .env support
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -17,6 +19,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    BookModule,
+    HighlightModule,
   ],
   controllers: [AppController],
   providers: [AppService],
