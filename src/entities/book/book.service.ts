@@ -9,7 +9,7 @@ import { BookResponseDto } from '../../dtos/response/book/book-response.dto';
 export class BookService {
   constructor(
     @InjectRepository(Book)
-    private readonly bookRepository: Repository<Book>,
+    private readonly _bookRepository: Repository<Book>,
   ) {}
 
   // async findAll(): Promise<Book[]> {
@@ -18,20 +18,20 @@ export class BookService {
 
   // region Main logic methods
   public async findById(id: string): Promise<Book> {
-    const book = await this.bookRepository.findOne({ where: { id } });
+    const _book = await this._bookRepository.findOne({ where: { id } });
     // TODO Change
-    if (!book) throw new NotFoundException('Book not found');
-    return book;
+    if (!_book) throw new NotFoundException('Book not found');
+    return _book;
   }
 
   public async createBook(data: IBook): Promise<Book> {
-    const book = this.bookRepository.create({
+    const _book = this._bookRepository.create({
       name: data.name,
       // TODO Change
       author: data.author || 'ناشناس',
       image: data.image,
     });
-    return this.bookRepository.save(book);
+    return this._bookRepository.save(_book);
   }
 
   // endregion
