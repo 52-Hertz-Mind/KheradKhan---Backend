@@ -4,7 +4,7 @@ import { ResponseMessageKey } from '../../enums/response-message.enum';
 
 @Controller('book')
 export class BookController {
-  constructor(private readonly bookService: BookService) {}
+  constructor(private readonly _bookService: BookService) {}
 
   // @Get()
   // async findAll() {
@@ -17,10 +17,10 @@ export class BookController {
 
   @Get('/:id')
   async findById(@Param('id') id: string) {
-    const book = await this.bookService.findById(id);
+    const _book = await this._bookService.findById(id);
     return {
       message: { key: ResponseMessageKey.BOOK_RETRIEVED },
-      data: book,
+      data: _book,
     };
   }
 }

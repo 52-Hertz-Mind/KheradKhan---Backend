@@ -12,8 +12,8 @@ import { HighlightResponseDto } from '../../dtos/response/highlight/highlight-re
 export class HighlightService {
   constructor(
     @InjectRepository(Highlight)
-    private readonly highlightRepository: Repository<Highlight>,
-    private readonly bookService: BookService,
+    private readonly _highlightRepository: Repository<Highlight>,
+    private readonly _bookService: BookService,
   ) {}
 
   // async findAll(): Promise<IHighlight[]> {
@@ -64,26 +64,42 @@ export class HighlightService {
   public async createHighlight(
     data: CreateHighlightRequestDto,
   ): Promise<HighlightResponseDto> {
-    let book: Book;
+    let _book: Book;
 
-    if (data.bookId) book = await this.bookService.findById(data.bookId);
+    if (data.bookId) _book = await this._bookService.findById(data.bookId);
     else
-      book = await this.bookService.createBook(
+      _book = await this._bookService.createBook(
         this._convertCreateHighlightRequestDtoToIBook(data),
       );
 
     // TODO Change
-    if (!book) throw new NotFoundException('Book not found or created');
+    if (!_book) throw new NotFoundException('Book not found or created');
 
-    const highlight = this.highlightRepository.create({
+    const _highlight = this._highlightRepository.create({
       text: data.text,
       // TODO Change
       pageNumber: 1,
-      book,
+      book: _book,
     });
 
-    await this.highlightRepository.save(highlight);
-    return this._convertHighlightToHighlightResponseDto(highlight);
+    await this._highlightRepository.save(_highlight);
+    return this._convertHighlightToHighlightResponseDto(_highlight);
+  }
+
+  public async findHighlightsByBookId(
+    id: string,
+  ): Promise<HighlightResponseDto[]> {
+    const _highlights: Highlight[] = await this._highlightRepository.find({
+      where: { book: { id }, isDeleted: false },
+      relations: ['book'],
+      order: { createdDate: 'ASC' },
+    });
+    // TODO Change
+    if (!_highlights) throw new NotFoundException('Highlight not found');
+    // TODO Change
+    return _highlights.map((_highlight) =>
+      this._convertHighlightToHighlightResponseDto(_highlight),
+    );
   }
 
   // endregion
@@ -102,15 +118,26 @@ export class HighlightService {
   private _convertHighlightToHighlightResponseDto(
     data: Highlight,
   ): HighlightResponseDto {
+    const { book } = data;
     return {
-      id: data.id,
-      text: data.text,
-      popularityScore: data.popularityScore,
-      pageNumber: data.pageNumber,
-      book: this.bookService.convertBookToBookResponseDto(data.book),
-      note: data.note,
-      createdDate: data.createdDate,
-      modifiedDate: data.modifiedDate,
+      highlight: {
+        id: data.id,
+        text: data.text,
+        popularityScore: data.popularityScore,
+        pageNumber: data.pageNumber,
+        note: data.note,
+        createdDate: data.createdDate,
+        modifiedDate: data.modifiedDate,
+      },
+      book: book && {
+        id: book.id,
+        name: book.name,
+        author: book.author,
+        image: book.image,
+        popularityScore: book.popularityScore,
+        createdDate: book.createdDate,
+        modifiedDate: book.modifiedDate,
+      },
     };
   }
 

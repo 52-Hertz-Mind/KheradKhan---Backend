@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { HighlightService } from './highlight.service';
 import { CreateHighlightRequestDto } from '../../dtos/request/highlight/create-highlight-request.dto';
 import { HighlightResponseDto } from '../../dtos/response/highlight/highlight-response.dto';
@@ -6,15 +6,26 @@ import { ResponseMessageKey } from '../../enums/response-message.enum';
 
 @Controller('highlight')
 export class HighlightController {
-  constructor(private readonly highlightService: HighlightService) {}
+  constructor(private readonly _highlightService: HighlightService) {}
 
-  @Post('createHighlight')
-  async createHighlight(@Body() createHighlightDto: CreateHighlightRequestDto) {
-    const highlight: HighlightResponseDto =
-      await this.highlightService.createHighlight(createHighlightDto);
+  @Post('create-highlight')
+  public async createHighlight(
+    @Body() createHighlightDto: CreateHighlightRequestDto,
+  ) {
+    const _highlight: HighlightResponseDto =
+      await this._highlightService.createHighlight(createHighlightDto);
     return {
       message: { key: ResponseMessageKey.HIGHLIGHT_CREATED },
-      data: highlight,
+      data: _highlight,
+    };
+  }
+
+  @Get('find-highlights-by-book-id/:bookId')
+  public async findHighlightsByBookId(@Param('bookId') id: string) {
+    const _highlights: HighlightResponseDto[] = await this._highlightService.findHighlightsByBookId(id);
+    return {
+      message: { key: ResponseMessageKey.HIGHLIGHT_RETRIEVED },
+      data: _highlights,
     };
   }
 
