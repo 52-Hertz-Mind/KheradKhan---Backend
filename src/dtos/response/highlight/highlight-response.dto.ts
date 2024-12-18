@@ -6,7 +6,7 @@ export class HighlightResponseDto {
   book: HighlightResponseDtoBook;
 }
 
-export class HighlightResponseDtoHighlight {
+class HighlightResponseDtoHighlight {
   id: string;
   text: string;
   pageNumber: number;
@@ -16,7 +16,7 @@ export class HighlightResponseDtoHighlight {
   modifiedDate: Date;
 }
 
-export class HighlightResponseDtoBook {
+class HighlightResponseDtoBook {
   id: string;
   name: string;
   author: string;
