@@ -12,10 +12,6 @@ export class BookService {
     private readonly _bookRepository: Repository<Book>,
   ) {}
 
-  // async findAll(): Promise<Book[]> {
-  //   return this.bookRepository.find();
-  // }
-
   // region Main logic methods
   public async findById(id: string): Promise<Book> {
     const _book = await this._bookRepository.findOne({ where: { id } });
@@ -34,10 +30,15 @@ export class BookService {
     return this._bookRepository.save(_book);
   }
 
+  public async findAll(): Promise<BookResponseDto[]> {
+    const _books = await this._bookRepository.find();
+    return _books.map((_book) => this._convertBookToBookResponseDto(_book));
+  }
+
   // endregion
 
   // region Helper methods
-  public convertBookToBookResponseDto(data: Book): BookResponseDto {
+  private _convertBookToBookResponseDto(data: Book): BookResponseDto {
     return {
       id: data.id,
       name: data.name,
