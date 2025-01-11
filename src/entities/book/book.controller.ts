@@ -24,13 +24,4 @@ export class BookController {
   //     data: _book,
   //   };
   // }
-
-  @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const _book = await this._bookService.findById(id);
-    return {
-      message: { key: ResponseMessageKey.BOOK_RETRIEVED },
-      data: _book,
-    };
-  }
 }
