@@ -37,12 +37,6 @@ export class BookService {
     });
     return this._bookRepository.save(_book);
   }
-
-  public async findAll(): Promise<BookResponseDto[]> {
-    const _books = await this._bookRepository.find();
-    return _books.map((_book) => this._convertBookToBookResponseDto(_book));
-  }
-
   // endregion
 
   // region Helper methods
