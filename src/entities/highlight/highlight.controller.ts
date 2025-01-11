@@ -22,7 +22,8 @@ export class HighlightController {
 
   @Get('find-highlights-by-book-id/:bookId')
   public async findHighlightsByBookId(@Param('bookId') id: string) {
-    const _highlights: HighlightResponseDto[] = await this._highlightService.findHighlightsByBookId(id);
+    const _highlights: HighlightResponseDto[] =
+      await this._highlightService.findHighlightsByBookId(id);
     return {
       message: { key: ResponseMessageKey.HIGHLIGHT_RETRIEVED },
       data: _highlights,

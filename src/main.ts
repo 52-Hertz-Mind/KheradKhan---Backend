@@ -10,7 +10,11 @@ import { ValidationExceptionFilter } from './filters/validation-exception.filter
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
     .setDescription('The API description')

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Book } from './book.entity';
 import { IBook } from './book.interface';
 import { BookResponseDto } from '../../dtos/response/book/book-response.dto';
+import _ from 'lodash';
 
 @Injectable()
 export class BookService {
@@ -12,13 +13,16 @@ export class BookService {
     private readonly _bookRepository: Repository<Book>,
   ) {}
 
-  // async findAll(): Promise<Book[]> {
-  //   return this.bookRepository.find();
-  // }
-
   // region Main logic methods
+  public async findAll(): Promise<BookResponseDto[]> {
+    const _books: Book[] = await this._bookRepository.find({
+      where: { isDeleted: false },
+    });
+    return _.map(_books, (book) => this._convertBookToBookResponseDto(book));
+  }
+
   public async findById(id: string): Promise<Book> {
-    const _book = await this._bookRepository.findOne({ where: { id } });
+    const _book: Book = await this._bookRepository.findOne({ where: { id } });
     // TODO Change
     if (!_book) throw new NotFoundException('Book not found');
     return _book;
@@ -37,7 +41,7 @@ export class BookService {
   // endregion
 
   // region Helper methods
-  public convertBookToBookResponseDto(data: Book): BookResponseDto {
+  private _convertBookToBookResponseDto(data: Book): BookResponseDto {
     return {
       id: data.id,
       name: data.name,

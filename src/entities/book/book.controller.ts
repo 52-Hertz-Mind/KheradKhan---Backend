@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { BookService } from './book.service';
 import { ResponseMessageKey } from '../../enums/response-message.enum';
 
@@ -6,21 +6,21 @@ import { ResponseMessageKey } from '../../enums/response-message.enum';
 export class BookController {
   constructor(private readonly _bookService: BookService) {}
 
-  // @Get()
-  // async findAll() {
-  //   const books = await this.bookService.findAll();
-  //   return {
-  //     message: { key: ResponseMessageKey.BOOKS_RETRIEVED },
-  //     data: books,
-  //   };
-  // }
-
-  @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const _book = await this._bookService.findById(id);
+  @Get('find-all')
+  public async findAll() {
+    const _books = await this._bookService.findAll();
     return {
-      message: { key: ResponseMessageKey.BOOK_RETRIEVED },
-      data: _book,
+      message: { key: ResponseMessageKey.BOOKS_RETRIEVED },
+      data: _books,
     };
   }
+
+  // @Get('final:id')
+  // public async findById(@Param('id') id: string) {
+  //   const _book = await this._bookService.findById(id);
+  //   return {
+  //     message: { key: ResponseMessageKey.BOOK_RETRIEVED },
+  //     data: _book,
+  //   };
+  // }
 }
