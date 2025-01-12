@@ -15,10 +15,8 @@ export class BookService {
 
   // region Main logic methods
   public async findAll(): Promise<BookResponseDto[]> {
-    const _books: Book[] = await this._bookRepository.find({
-      where: { isDeleted: false },
-    });
-    return _.map(_books, (book) => this._convertBookToBookResponseDto(book));
+    const _books: Book[] = await this._bookRepository.find();
+    return _books.map(this._convertBookToBookResponseDto);
   }
 
   public async findById(id: string): Promise<Book> {
